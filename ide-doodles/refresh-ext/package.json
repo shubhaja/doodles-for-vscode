@@ -1,0 +1,15 @@
+{
+  "name": "doodles-refresh",
+  "displayName": "Doodles Refresh",
+  "description": "Save, apply doodles, and reload this window with one shortcut.",
+  "version": "0.1.0",
+  "publisher": "local-custom",
+  "engines": {"vscode": "^1.90.0"},
+  "main": "./extension.js",
+  "extensionKind": ["ui"],
+  "capabilities": {"untrustedWorkspaces": {"supported": false}},
+  "contributes": {
+    "commands": [{"command": "doodles.applyAndReload", "title": "Doodles: Apply and Reload"}],
+    "keybindings": [{"command": "doodles.applyAndReload", "key": "ctrl+alt+r", "mac": "cmd+alt+r"}]
+  }
+}

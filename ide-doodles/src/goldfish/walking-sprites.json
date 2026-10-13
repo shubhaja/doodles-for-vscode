@@ -1,0 +1,83 @@
+{
+  "source": "goldfish.js",
+  "sourceSha256": "748ef54093d73faed024075600f7739ab9e38e7f7185dec4580e30d364249732",
+  "frameWidth": 64,
+  "frameHeight": 40,
+  "columns": 4,
+  "rows": 11,
+  "sheets": [
+    {
+      "id": 0,
+      "name": "orange",
+      "file": "walking-orange.png"
+    },
+    {
+      "id": 1,
+      "name": "cream",
+      "file": "walking-cream.png"
+    },
+    {
+      "id": 2,
+      "name": "coral",
+      "file": "walking-coral.png"
+    }
+  ],
+  "stages": [
+    {
+      "index": 0,
+      "name": "Walking goldfish",
+      "seconds": 0
+    },
+    {
+      "index": 1,
+      "name": "Lobe-finned fish",
+      "seconds": 30
+    },
+    {
+      "index": 2,
+      "name": "Early tetrapod",
+      "seconds": 60
+    },
+    {
+      "index": 3,
+      "name": "Early amniote",
+      "seconds": 90
+    },
+    {
+      "index": 4,
+      "name": "Early synapsid",
+      "seconds": 120
+    },
+    {
+      "index": 5,
+      "name": "Cynodont",
+      "seconds": 150
+    },
+    {
+      "index": 6,
+      "name": "Small early mammal",
+      "seconds": 180
+    },
+    {
+      "index": 7,
+      "name": "Early even-toed ungulate",
+      "seconds": 210
+    },
+    {
+      "index": 8,
+      "name": "Early ruminant",
+      "seconds": 240
+    },
+    {
+      "index": 9,
+      "name": "Wild sheep",
+      "seconds": 270
+    },
+    {
+      "index": 10,
+      "name": "Domestic woolly sheep",
+      "seconds": 300
+    }
+  ],
+  "terminalBehavior": "At 300 seconds the animal joins the native pasture sheep controller. Final atlas frames match its two-state waddle."
+}

@@ -1,0 +1,103 @@
+{
+  "name": "doodles",
+  "displayName": "Doodles",
+  "description": "Sheep, weather, music, and a sky that follows the clock.",
+  "version": "0.3.1",
+  "publisher": "local-custom",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./extension.js",
+  "browser": "./browser.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "capabilities": {
+    "virtualWorkspaces": true,
+    "untrustedWorkspaces": {
+      "supported": true
+    }
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "package": "python3 build.py"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "doodles.open",
+        "title": "Doodles: Open Pasture"
+      },
+      {
+        "command": "doodles.sky.enable",
+        "title": "Doodles: Enable Pasture Sky Colors"
+      },
+      {
+        "command": "doodles.sky.pause",
+        "title": "Doodles: Pause Pasture Sky Colors"
+      },
+      {
+        "command": "doodles.sky.restore",
+        "title": "Doodles: Reset Pasture Sky Colors"
+      },
+      {
+        "command": "doodles.terminalGoal",
+        "title": "Doodles: Rename Active Terminal / Set Goal"
+      }
+    ],
+    "viewsContainers": {
+      "panel": [
+        {
+          "id": "doodles",
+          "title": "Doodles",
+          "icon": "media/pasture.svg"
+        }
+      ]
+    },
+    "views": {
+      "doodles": [
+        {
+          "type": "webview",
+          "id": "doodles.pasture",
+          "name": "Pasture"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Doodles",
+      "properties": {
+        "doodles.weather.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Fetch cloud cover from Open-Meteo for the configured location."
+        },
+        "doodles.weather.latitude": {
+          "type": "number",
+          "default": 40.7479,
+          "minimum": -90,
+          "maximum": 90,
+          "description": "Weather latitude."
+        },
+        "doodles.weather.longitude": {
+          "type": "number",
+          "default": -73.9867,
+          "minimum": -180,
+          "maximum": 180,
+          "description": "Weather longitude."
+        }
+      }
+    }
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shubhaja/doodles-for-vscode.git"
+  },
+  "bugs": {
+    "url": "https://github.com/shubhaja/doodles-for-vscode/issues"
+  },
+  "homepage": "https://github.com/shubhaja/doodles-for-vscode#readme"
+}

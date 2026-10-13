@@ -1,0 +1,12 @@
+html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; }
+body { background: var(--pasture-sky, #d6edf9); color: #303b50; transition: background 2s; }
+body::before { content: ''; position: fixed; inset: 0; background: url('paper-and-grass.svg') center / 100% 100%; pointer-events: none; }
+#pasture-ground { position: fixed; bottom: 0; height: 86px; width: 100%; pointer-events: none; }
+#pasture-toolbar { position: fixed; top: 6px; right: 8px; z-index: 1005; }
+#pasture-toolbar ul { list-style: none; margin: 0; padding: 0; display: flex; }
+#pasture-help { position: fixed; top: 8px; left: 12px; right: 40px; margin: 0; font: 11px/1.5 sans-serif; opacity: .7; }
+#weather-credit { position: fixed; left: 12px; bottom: 3px; z-index: 1006; color: #303b50; font: 10px sans-serif; }
+.codicon-mute::before { content: '♪'; text-decoration: line-through; }
+.codicon-unmute::before { content: '♫'; }
+@media (max-height: 160px) { #pasture-help { display: none; } }
+@media (prefers-reduced-motion: reduce) { body { transition: none; } }

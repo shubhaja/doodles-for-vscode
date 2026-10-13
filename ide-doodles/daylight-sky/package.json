@@ -1,0 +1,38 @@
+{
+	"name": "daylight-sky",
+	"displayName": "Daylight Sky",
+	"description": "A soft sky-blue workspace that gradually turns peach and lavender with your local clock.",
+	"version": "0.0.1",
+	"publisher": "local-custom",
+	"engines": {
+		"vscode": "^1.90.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onStartupFinished"
+	],
+	"main": "./extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "daylightSky.pause",
+				"title": "Daylight Sky: Pause Color Changes"
+			},
+			{
+				"command": "daylightSky.resume",
+				"title": "Daylight Sky: Resume Color Changes"
+			},
+			{
+				"command": "daylightSky.restore",
+				"title": "Daylight Sky: Restore Original Colors"
+			}
+		]
+	},
+	"__metadata": {
+		"installedTimestamp": 1789675475908,
+		"targetPlatform": "undefined",
+		"size": 5760
+	}
+}

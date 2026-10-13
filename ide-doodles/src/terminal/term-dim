@@ -1,0 +1,76 @@
+#!/bin/zsh
+# term-dim dim|undim — set the terminal background via OSC 11 (VS Code / xterm.js honour it).
+# The dim colour is 25% darker than an explicitly known terminal background.
+# If the background is unknown, reset to the theme. Hook subprocesses have no /dev/tty, so walk up to the claude / codex
+# process and write to its terminal device. On "dim", a detached watcher polls Claude Code's
+# ~/.claude/sessions/<pid>.json and undims as soon as status is "idle" (this catches Escape,
+# which fires no hook). Every call is logged to ~/.local/state/term-dim.log.
+mkdir -p ~/.local/state; log=~/.local/state/term-dim.log
+theme_bg() {
+  # Never guess a dark background when the real color is unavailable (for
+  # example, when an agent sandbox cannot read VS Code settings).
+  local bg="${DOODLES_TERMINAL_BACKGROUND:-}"
+  local cache="$HOME/.cache/doodles/terminal-background"
+  if [[ -z "$bg" && -r "$cache" ]]; then
+    IFS= read -r bg < "$cache"
+  fi
+  if [[ -z "$bg" ]]; then
+    local settings="$HOME/Library/Application Support/Code/User/settings.json"
+    if [[ -r "$settings" ]]; then
+      bg=$(sed -nE 's/.*"terminal.background"[[:space:]]*:[[:space:]]*"(#[[:xdigit:]]{6})".*/\1/p' "$settings" 2>/dev/null | tail -1)
+    fi
+  fi
+  [[ "$bg" =~ '^#[[:xdigit:]]{6}$' ]] || return 1
+  print -r -- "$bg"
+}
+find_owner() {   # sets $dev (terminal device) and $owner (the claude/codex pid)
+  dev=""; owner=""; local p=$$
+  for i in 1 2 3 4 5 6; do
+    local t=$(ps -o tty= -p "$p" 2>/dev/null | tr -d ' ')
+    if [[ -n "$t" && "$t" != "??" ]]; then dev="/dev/$t"; owner="$p"; break; fi
+    p=$(ps -o ppid= -p "$p" 2>/dev/null | tr -d ' '); [[ -z "$p" || "$p" == 0 || "$p" == 1 ]] && break
+  done
+  [[ -z "$dev" && -w /dev/tty ]] && dev=/dev/tty
+}
+write_seq() { [[ -n "$dev" ]] && { printf '%s' "$1" > "$dev"; } 2>/dev/null; }
+UNDIM=$'\033]111\007'
+
+case "$1" in
+  watch)   # term-dim watch <owner pid> <device>  (internal, detached)
+    o="$2"; d="$3"; f=~/.claude/sessions/$o.json; n=0
+    while (( n < 28800 )); do
+      sleep 0.5; n=$((n+1))
+      [[ -f "$f" ]] || { printf '%s' "$UNDIM" > "$d" 2>/dev/null; echo "$(date '+%H:%M:%S') watch: session file gone, undim -> $d" >> "$log"; exit 0; }
+      if grep -q '"status":"idle"' "$f" 2>/dev/null; then
+        printf '%s' "$UNDIM" > "$d" 2>/dev/null; echo "$(date '+%H:%M:%S') watch: idle, undim -> $d (pid $o)" >> "$log"; exit 0
+      fi
+    done; exit 0 ;;
+  log) echo "$(date '+%H:%M:%S') EVENT $2 (parent=$PPID)" >> "$log"; exit 0 ;;
+  dim)
+    if ! bg=$(theme_bg); then
+      find_owner; write_seq "$UNDIM"
+      echo "$(date +%H:%M:%S) background unavailable; left at theme default" >> "$log"
+      exit 0
+    fi
+    r=$((16#${bg:1:2})); g=$((16#${bg:3:2})); b=$((16#${bg:5:2}))
+    dimhex=$(printf '#%02x%02x%02x' $((r*75/100)) $((g*75/100)) $((b*75/100)))
+    find_owner
+    if write_seq $'\033]11;'"$dimhex"$'\007'; then
+      echo "$(date '+%H:%M:%S') dim $dimhex ok -> $dev (via pid $owner)" >> "$log"
+    else
+      echo "$(date '+%H:%M:%S') dim FAILED: no terminal found (parent=$PPID)" >> "$log"; exit 0
+    fi
+    if [[ -n "$owner" && -f ~/.claude/sessions/$owner.json ]]; then
+      pidf=~/.local/state/term-dim-$owner.pid
+      [[ -f "$pidf" ]] && kill "$(cat "$pidf")" 2>/dev/null
+      nohup "$0" watch "$owner" "$dev" >/dev/null 2>&1 &!
+      echo $! > "$pidf"
+    fi ;;
+  undim)
+    find_owner
+    if [[ -n "$owner" ]]; then pidf=~/.local/state/term-dim-$owner.pid; [[ -f "$pidf" ]] && { kill "$(cat "$pidf")" 2>/dev/null; rm -f "$pidf"; }; fi
+    if write_seq "$UNDIM"; then echo "$(date '+%H:%M:%S') undim ok -> $dev (via pid $owner)" >> "$log"
+    else echo "$(date '+%H:%M:%S') undim FAILED: no terminal found (parent=$PPID)" >> "$log"; fi ;;
+  *) echo "usage: term-dim dim|undim" >&2; exit 1 ;;
+esac
+exit 0

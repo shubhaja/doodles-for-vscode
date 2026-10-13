@@ -1,0 +1,22 @@
+/* Focus must not tint the sky or terminal contents. */
+.monaco-workbench .terminal-wrapper::after {content: none !important;}
+.monaco-workbench .terminal-wrapper {filter: none !important;}
+
+/* Keep native controls at the top of the 160px pasture reservation. */
+.monaco-workbench .part.statusbar {
+  align-items: flex-start !important;
+  background-color: var(--pasture-sky, var(--vscode-statusBar-background)) !important;
+}
+.monaco-workbench .part.statusbar > .items-container {
+  height: 22px !important;
+  min-height: 22px !important;
+  align-self: flex-start !important;
+  align-items: center !important;
+  background: var(--vscode-statusBar-background);
+  box-shadow: 0 1px 0 var(--vscode-panel-border, #80808040);
+  z-index: 1;
+}
+.monaco-workbench .part.statusbar > .items-container > .statusbar-item {
+  height: 22px !important;
+  max-height: 22px !important;
+}

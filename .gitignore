@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.DS_Store
+.tools/
+ide-doodles/backups/
+ide-doodles/.reload-helper/
+*.vsix
+ide-doodles/doodles-ext/browser.js
+ide-doodles/doodles-ext/media/*
+!ide-doodles/doodles-ext/media/scene.js
+!ide-doodles/doodles-ext/media/scene.css
+!ide-doodles/doodles-ext/media/pasture.svg

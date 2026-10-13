@@ -1,0 +1,22 @@
+const {test}=require('node:test'),assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs');
+test('procedural cover grows through the bottom row, pauses, resizes and disposes',()=>{
+ let pixels,callback,removed=false,cleared=false;
+ const ctx={createImageData:(w,h)=>({data:new Uint8ClampedArray(w*h*4)}),putImageData:p=>pixels=p.data,clearRect:()=>pixels=new Uint8ClampedArray(canvas.width*canvas.height*4)};
+ const canvas={getContext:()=>ctx,remove:()=>removed=true};
+ const listeners=new Map();
+ const noise=require('./vendor/simplex-noise.cjs');
+ let seed=19;const random=()=>((seed=(seed*1664525+1013904223)>>>0)/4294967296);
+ const context={window:{doodlesSimplex:{createNoise3D:()=>noise.createNoise3D(random)},addEventListener:(k,f)=>listeners.set(k,f),removeEventListener:k=>listeners.delete(k)},document:{hidden:false,createElement:()=>canvas},innerWidth:1100,innerHeight:800,matchMedia:()=>({matches:true}),setInterval:f=>(callback=f,1),clearInterval:()=>cleared=true};
+ vm.runInNewContext(fs.readFileSync(__dirname+'/cloud-field.js','utf8'),context);
+ const field=context.window.doodlesCloudField({appendChild(){}});
+ const sum=()=>pixels.reduce((s,v,i)=>s+(i%4===3?v:0),0);
+ field.setCover(0,true);assert.equal(sum(),0);
+ field.setCover(35,true);const sparse=sum();assert(sparse>0);
+ field.setCover(100,true);assert(sum()>sparse);
+ assert(pixels.slice(-canvas.width*4).some((v,i)=>i%4===3&&v>0));
+ assert(Math.max(...pixels.filter((v,i)=>i%4===3))<=74);
+ const before=pixels;callback();assert.equal(pixels,before);
+ context.document.hidden=true;field.setCover(20,true);assert.equal(pixels,before);
+ context.document.hidden=false;context.innerWidth=500;listeners.get('resize')();assert.equal(canvas.width,100);
+ field.dispose();assert(removed&&cleared);assert.equal(listeners.size,0);
+});
