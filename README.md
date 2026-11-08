@@ -4,8 +4,6 @@ A little world alongside your work: grazing sheep, weather, changing skies, and 
 
 https://github.com/user-attachments/assets/41750b36-b35e-4720-9a4b-4664cc5f8ec7
 
-![Doodles Cozy mode in the portable pasture panel](docs/cozy.png)
-
 ## Try the extension
 
 Download [doodles-0.3.1.vsix](https://github.com/shubhaja/doodles-for-vscode/releases/download/v0.3.1/doodles-0.3.1.vsix) and install it using **Extensions → … → Install from VSIX**, then run **Doodles: Open Pasture** from the Command Palette. Move the view to a panel or sidebar and open its gear menu.
