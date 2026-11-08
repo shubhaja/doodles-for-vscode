@@ -2,6 +2,8 @@
 
 A little world alongside your work: grazing sheep, weather, changing skies, and playful modes. This is an experimental personal project. Bugs are expected; small fixes and pull requests are welcome.
 
+https://github.com/user-attachments/assets/41750b36-b35e-4720-9a4b-4664cc5f8ec7
+
 ![Doodles Cozy mode in the portable pasture panel](docs/cozy.png)
 
 ## Try the extension
